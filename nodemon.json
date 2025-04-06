@@ -1,0 +1,8 @@
+{
+    "verbose": true,
+    "watch": ["app.js", "routes/", "models/"],
+    "ext": "js,json",
+    "ignore": ["public/", "node_modules/"],
+    "delay": "1000"
+  }
+  

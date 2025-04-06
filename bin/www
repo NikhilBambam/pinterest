@@ -1,0 +1,98 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+const app = require('../app');
+const debug = require('debug')('pin:server');
+const http = require('http');
+const portfinder = require('portfinder');
+
+// Set default port (use environment variable or 3000)
+const DEFAULT_PORT = normalizePort(process.env.PORT || '3000');
+
+// Create server
+const server = http.createServer(app);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+function normalizePort(val) {
+  const port = parseInt(val, 10);
+  if (isNaN(port)) return val; // named pipe
+  if (port >= 0) return port;  // port number
+  return false;
+}
+
+/**
+ * Start server with smart port handling
+ */
+function startServer() {
+  const basePort = normalizePort(process.env.PORT || DEFAULT_PORT);
+  
+  portfinder.getPortPromise({
+    port: basePort,
+    stopPort: basePort + 100
+  })
+  .then(port => {
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', () => onListening(port));
+  })
+  .catch(err => {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  });
+}
+
+/**
+ * Error handler
+ */
+function onError(error) {
+  if (error.syscall !== 'listen') throw error;
+  
+  const bind = typeof DEFAULT_PORT === 'string'
+    ? 'Pipe ' + DEFAULT_PORT
+    : 'Port ' + DEFAULT_PORT;
+
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use - retrying...');
+      // Don't call startServer() here - let nodemon handle the restart
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Listening handler
+ */
+function onListening(port) {
+  const addr = server.address();
+  const bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+    
+  debug('Listening on ' + bind);
+  console.log(`Server successfully started on port ${port}`);
+  app.set('port', port);
+}
+
+// Start the server
+startServer();
+
+// Cleanup handlers - modified to work better with nodemon
+process.once('SIGUSR2', () => {
+  server.close(() => {
+    process.kill(process.pid, 'SIGUSR2');
+  });
+});
+
+process.on('SIGTERM', () => server.close());
+process.on('SIGINT', () => server.close());

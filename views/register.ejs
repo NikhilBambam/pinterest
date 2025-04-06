@@ -1,0 +1,19 @@
+<%- include ('./partials/header') %>
+
+<div class="w-full h-screen bg-center bg-cover  flex items-center justify-center" style="background-image: url(https://images.unsplash.com/photo-1742593323531-c6c4dcd12351?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);">
+    <div class="w-96 bg-white px-6 py-12 rounded-2xl shadow-lg bg-zinc-200  ">
+      <h1 class="text-4xl text-center font-bold text-gray-800 tracking-tight">Create New Account</h1>
+      <form action="/register" class="mt-6" method="post">
+        <input class="border rounded-lg w-full px-4 py-2 mt-3 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" type="text" name="username" placeholder="Username">
+        <input class="border rounded-lg w-full px-4 py-2 mt-3 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" type="email" name="email" placeholder="Email">
+        <input class="border rounded-lg w-full px-4 py-2 mt-3 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" type="number" name="contact" placeholder="Contact Number">
+        <input class="border rounded-lg w-full px-4 py-2 mt-3 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" type="password" name="password" placeholder="Password">
+        
+        <button class="w-full mt-4 px-4 py-2 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700 transition duration-200">Register</button>
+        <p class="text-xs text-gray-600 text-center mt-6">By continuing, you agree to Pinterest's <a href="#" class="text-red-500 hover:underline">Terms of Service</a> and <a href="#" class="text-red-500 hover:underline">Privacy Policy</a>.</p>
+      </form>
+      <a class="inline-block mt-6 text-sm font-medium text-gray-700 text-center w-full hover:underline" href="/">Login Existing account</a>
+    </div>
+  </div>
+
+  <% include ('./partials/footer') %> 
