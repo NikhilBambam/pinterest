@@ -1,2 +1,19 @@
 # Dependencies
 node_modules/
+
+
+# Environment variables (sensitive data)
+.env
+.env.local
+*.env
+
+# Logs
+*.log
+
+# Debug files
+npm-debug.log*
+
+# IDE/Editor (VSCode, JetBrains, etc.)
+.idea/
+.vscode/
+*.swp
