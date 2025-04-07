@@ -1,14 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link
-    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
-    rel="stylesheet"
-/>
-  <link rel="stylsheet " href="/public/stylesheets/style.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
+ <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Pinterest 📌 📌</title>
+      <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+      <link rel="stylesheet" href="/public/stylesheets/style.css">
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'pinterest-red': '#E60023',
+              }
+            }
+          }
+        }
+      </script>
+    </head>
+    <body>
+    
+      <% if(nav === true) { %>
+        <header class="w-full sticky top-0 z-50 bg-zinc-800 text-white shadow-sm">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+             
+              <div class="flex-shrink-0">
+                <a href="https://en.wikipedia.org/wiki/Pinterest" class="flex items-center">
+                  <i class="ri-pinterest-fill text-3xl text-pinterest-red"></i>
+                  <span class="ml-2 text-xl font-bold text-pinterest-red hidden sm:inline">Pinterest</span>
+                </a>
+              </div>
+              
+             
+              <div class="flex items-center space-x-6">
+              
+                <div class="hidden md:flex items-center space-x-6">
+                  <a href="/feed" class="text-white hover:text-pinterest-red px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                    <i class="ri-layout-masonry-fill mr-1"></i> Feed
+                  </a>
+                  <a href="/profile" class="text-white hover:text-pinterest-red px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                    <i class="ri-user-3-fill mr-1"></i> Profile
+                  </a>
+                  <a href="/logout" class="flex items-center px-4 py-2 bg-pinterest-red text-white rounded-full text-sm font-medium hover:bg-red-700 transition-colors">
+                    <i class="ri-logout-box-r-line mr-2"></i> Logout
+                  </a>
+                </div>
+                
+                
+                <button class="md:hidden text-gray-300 hover:text-white focus:outline-none">
+                  <i class="ri-menu-line text-2xl"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          
+          <div class="md:hidden hidden bg-zinc-700">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+              <a href="/feed" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-pinterest-red hover:bg-zinc-600">
+                <i class="ri-layout-masonry-fill mr-2"></i> Feed
+              </a>
+              <a href="/profile" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-pinterest-red hover:bg-zinc-600">
+                <i class="ri-user-3-fill mr-2"></i> Profile
+              </a>
+              <a href="/logout" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-pinterest-red hover:bg-zinc-600">
+                <i class="ri-logout-box-r-line mr-2"></i> Logout
+              </a>
+            </div>
+          </div>
+        </header>
+      <% } %>
+  
+  
+  
+  

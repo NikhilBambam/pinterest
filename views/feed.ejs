@@ -1,0 +1,346 @@
+<%- include ('./partials/header') %>
+
+<style>
+    /* Base Styles */
+    body {
+        overflow-x: hidden;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    /* Background Animation */
+    @keyframes float {
+        0%, 100% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-20px) scale(1.05); }
+    }
+    
+    .floating-dot {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(60px);
+        animation: float 8s ease-in-out infinite;
+        will-change: transform;
+        opacity: 0.4;
+    }
+    
+    /* Card Styles */
+    .pin-card {
+        position: relative;
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        background: #1f1f1f;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .pin-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(244, 63, 94, 0.2);
+    }
+    
+    .pin-image-container {
+        position: relative;
+        width: 100%;
+        padding-top: 100%; /* 1:1 aspect ratio */
+        overflow: hidden;
+    }
+    
+    .pin-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .pin-card:hover .pin-image {
+        transform: scale(1.05);
+    }
+    
+    .card-content {
+        padding: 16px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: white;
+    }
+    
+    .card-description {
+        font-size: 14px;
+        color: #a1a1aa;
+        margin-bottom: 8px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.5;
+    }
+    
+    /* Grid Layout */
+    .pin-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
+        padding: 20px 0;
+    }
+    
+    /* Modal Styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+    
+    .modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .modal-container {
+        width: 90%;
+        max-width: 1000px;
+        max-height: 90vh;
+        background: #1a1a1a;
+        border-radius: 16px;
+        overflow: hidden;
+        transform: scale(0.95);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-overlay.active .modal-container {
+        transform: scale(1);
+    }
+    
+    .modal-image-container {
+        flex: 1.5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
+    }
+    
+    .modal-image {
+        max-width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
+    }
+    
+    .modal-details {
+        flex: 1;
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+    
+    .modal-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: white;
+    }
+    
+    .modal-description {
+        color: #d4d4d8;
+        line-height: 1.6;
+        margin-bottom: 16px;
+    }
+    
+    .modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        z-index: 10;
+        border: none;
+        color: white;
+    }
+    
+    .modal-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .modal-container {
+            flex-direction: column;
+            max-height: 95vh;
+        }
+        
+        .modal-image-container {
+            flex: none;
+            height: 40vh;
+        }
+        
+        .modal-details {
+            flex: none;
+            max-height: 55vh;
+        }
+        
+        .pin-grid {
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
+    }
+</style>
+
+<div class="w-full min-h-screen bg-zinc-900 px-4 sm:px-10 py-8 text-white relative overflow-hidden">
+    <!-- Floating Background Dots -->
+    <div class="floating-dot" style="width: 300px; height: 300px; background: #f43f5e; top: 10%; left: 5%;"></div>
+    <div class="floating-dot" style="width: 400px; height: 400px; background: #3b82f6; top: 60%; left: 70%; animation-delay: 1s;"></div>
+    
+    <div class="relative z-10 max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12 gap-4">
+            <h1 class="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rose-500 to-blue-500">
+                Creative Gallery
+            </h1>
+            <div class="relative w-full md:w-auto">
+                <input 
+                    type="text" 
+                    placeholder="Search creations..." 
+                    class="bg-zinc-800/70 backdrop-blur-md rounded-full py-2 px-5 pr-10 focus:outline-none focus:ring-2 focus:ring-rose-500 border border-zinc-700 text-white placeholder-zinc-400 transition-all duration-200 w-full md:w-64"
+                >
+                <svg class="w-4 h-4 text-zinc-400 absolute right-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+        </div>
+        
+        <div class="pin-grid">
+            <% posts.forEach((post, index) => { %>
+                <div class="pin-card">
+                    <div class="pin-image-container">
+                        <img 
+                            src="/images/uploads/<%= post.image %>" 
+                            class="pin-image" 
+                            alt="<%= post.title %>"
+                            loading="lazy"
+                        >
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title"><%= post.title %></h3>
+                        <% if (post.description) { %>
+                            <p class="card-description"><%= post.description %></p>
+                        <% } %>
+                    </div>
+                    <div 
+                        class="pin-data hidden"
+                        data-id="<%= post._id %>"
+                        data-title="<%= post.title %>"
+                        data-description="<%= post.description %>"
+                        data-image="<%= post.image %>"
+                    ></div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="imageModal">
+    <div class="modal-container">
+        <button class="modal-close" id="modalClose">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <div class="modal-image-container">
+            <img id="modalImage" class="modal-image" src="" alt="">
+        </div>
+        <div class="modal-details">
+            <h2 class="modal-title" id="modalTitle"></h2>
+            <p class="modal-description" id="modalDescription"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Set up card click handlers
+        document.querySelectorAll('.pin-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const dataElement = this.querySelector('.pin-data');
+                const modal = document.getElementById('imageModal');
+                
+                // Set modal content
+                document.getElementById('modalImage').src = `/images/uploads/${dataElement.dataset.image}`;
+                document.getElementById('modalTitle').textContent = dataElement.dataset.title;
+                document.getElementById('modalDescription').textContent = dataElement.dataset.description || 'No description provided';
+                
+                // Show modal
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+        
+        // Close modal
+        document.getElementById('modalClose').addEventListener('click', function() {
+            document.getElementById('imageModal').classList.remove('active');
+            document.body.style.overflow = '';
+        });
+        
+        // Close modal when clicking outside
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Close with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('imageModal').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Search functionality
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            document.querySelectorAll('.pin-card').forEach(card => {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                const description = card.querySelector('.card-description')?.textContent.toLowerCase() || '';
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+
+<%- include ('./partials/footer') %>
