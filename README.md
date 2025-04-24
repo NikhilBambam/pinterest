@@ -2,7 +2,7 @@
 
 A minimalistic image sharing platform built with Node.js, Express, and MongoDB, featuring user authentication and post creation.
 
-🚀 Live Demo :-https://pinterest-production-8b4d.up.railway.app
+🚀 Live Demo :-https://pinterest-aikh.onrender.com
 
 ## Features
 
